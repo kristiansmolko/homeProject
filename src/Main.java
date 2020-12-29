@@ -36,6 +36,12 @@ public class Main{ //extends Application {
        else if (temp[0].equalsIgnoreCase("I"))
            row = 8;
 
+       //if you can place your ship
+       if (field[row][col] == -1) {
+           System.out.println("You can't place your ship here");
+           return;
+       }
+       //create ship
        field[row][col] = 1;
        ships.add(new Ship(row, col));
 
@@ -44,13 +50,20 @@ public class Main{ //extends Application {
             if (!(row-1 < 0)) {
                 field[row - 1][col + 1] = -1;
                 field[row - 1][col + 2] = -1;
+                if (field[row-1][col] == 1)
+                    field[row+1][col] = 0;
+                if (field[row+1][col] == 1){
+                    field[row-1][col] = 0;
+                    field[row+2][col] = 0;
+                }
             }
-            field[row][col+2] = -1;
             field[row+1][col+1] = -1;
             field[row+1][col+2] = -1;
             field[row+2][col] = -1;
             field[row+2][col+1] = -1;
             field[row+2][col+2] = -1;
+            if (field[row+1][col] == 1)
+                field[row+2][col] = 0;
         }
        else if ((row-2 < 0) && (col-2 < 0)){
             field[row][col+2] = -1;
@@ -65,7 +78,21 @@ public class Main{ //extends Application {
                 field[row-1][col-1] = -1;
                 field[row-1][col+1] = -1;
                 field[row-1][col+2] = -1;
+                if (field[row-1][col] == 1)
+                    field[row+1][col] = 0;
+                else if (field[row+1][col] == 1){
+                    field[row-1][col] = 0;
+                    field[row+2][col] = 0;
+                }
             }
+            if (field[row][col-1] == 1)
+                field[row][col+1] = 0;
+            else if (field[row][col+1] == 1) {
+                field[row][col - 1] = 0;
+                field[row][col + 2] = 0;
+            }
+            else if (field[row+1][col] == 1)
+                field[row+2][col] = 0;
         }
        else if ((row-2 < 0) && (col < 7)){
             if (!(row-1 < 0)) {
@@ -73,6 +100,12 @@ public class Main{ //extends Application {
                 field[row - 1][col - 1] = -1;
                 field[row - 1][col + 1] = -1;
                 field[row - 1][col + 2] = -1;
+                if (field[row-1][col] == 1)
+                    field[row+1][col] = 0;
+                else if (field[row+1][col] == 1){
+                    field[row-1][col] = 0;
+                    field[row+2][col] = 0;
+                }
             }
             field[row][col-2] = -1;
             field[row][col+2] = -1;
@@ -85,11 +118,24 @@ public class Main{ //extends Application {
             field[row+2][col] = -1;
             field[row+2][col+1] = -1;
             field[row+2][col+2] = -1;
+           if (field[row][col-1] == 1) {
+               field[row][col+1] = 0;
+               field[row][col-2] = 0;
+           }
+           else if (field[row][col+1] == 1) {
+               field[row][col-1] = 0;
+               field[row][col+2] = 0;
+           }
+           else if (field[row+1][col] == 1)
+               field[row+2][col] = 0;
+
         }
        else if ((row-2 < 0) && (col+2 > 8)){
             if (!(row-1 < 0)) {
                 field[row - 1][col - 2] = -1;
                 field[row - 1][col - 1] = -1;
+                if (field[row-1][col] == 1)
+                    field[row+1][col] = 0;
             }
             field[row][col-2] = -1;
             field[row+1][col-2] = -1;
@@ -101,7 +147,19 @@ public class Main{ //extends Application {
                 if (!(row-1 < 0)) field[row-1][col+1] = -1;
                 field[row+1][col+1] = -1;
                 field[row+2][col+1] = -1;
+                if (field[row][col+1] == 1)
+                    field[row][col-1] = 0;
+                else if (field[row][col-1] == 1){
+                    field[row][col+1] = 0;
+                    field[row][col-2] = 0;
+                }
+                if (field[row+1][col] == 1)
+                    field[row-1][col] = 0;
             }
+            if (field[row][col-1] == 1)
+                field[row][col-2] = 0;
+            else if (field[row+1][col] == 1)
+                field[row+2][col] = 0;
         }
 
        //last col
@@ -122,6 +180,21 @@ public class Main{ //extends Application {
                 field[row-1][col+1] = -1;
                 field[row+1][col+1] = -1;
                 field[row+2][col+1] = -1;
+                if (field[row][col-1] == 1){
+                    field[row][col+1] = 0;
+                    field[row][col-2] = 0;
+                }
+            }
+            if (field[row-1][col] == 1){
+                field[row+1][col] = 0;
+                field[row-2][col] = 0;
+            }
+            else if (field[row+1][col] == 1){
+                field[row-1][col] = 0;
+                field[row+2][col] = 0;
+            }
+            else if (field[row][col-1] == 1){
+                field[row][col-2] = 0;
             }
         }
 
@@ -136,12 +209,28 @@ public class Main{ //extends Application {
             if (!(row+1 > 8)){
                 field[row+1][col-2] = -1;
                 field[row+1][col-1] = -1;
+                if (field[row+1][col] == 1)
+                    field[row-1][col] = 0;
+                else if (field[row-1][col] == 1){
+                    field[row+1][col] = 0;
+                    field[row-2][col] = 0;
+                }
             }
             if (!(col+1 > 8)){
                 field[row-2][col+1] = -1;
                 field[row-1][col+1] = -1;
                 if (!(row+1 > 8)) field[row+1][col+1] = -1;
+                if (field[row][col+1] == 1)
+                    field[row][col-1] = 0;
+                if (field[row][col-1] == 1){
+                    field[row][col+1] = 0;
+                    field[row][col-2] = 0;
+                }
             }
+            if (field[row-1][col] == 1)
+                field[row-2][col] = 0;
+            else if (field[row][col-1] == 1)
+                field[row][col-2] = 0;
         }
        else if ((row+2 > 8) && (col-2 < 0)){
             field[row-2][col] = -1;
@@ -153,12 +242,30 @@ public class Main{ //extends Application {
             if (!(row+1 > 8)){
                 field[row+1][col+1] = -1;
                 field[row+1][col+2] = -1;
+                if (field[row+1][col] == 1)
+                    field[row-1][col] = 0;
+                else if (field[row-1][col] == 1){
+                    field[row+1][col] = 0;
+                    field[row-2][col] = 0;
+                }
             }
             if (!(col-1 < 0)){
                 field[row-2][col-1] = -1;
                 field[row-1][col-1] = -1;
                 if (!(row+1 > 8)) field[row+1][col-1] = -1;
+                if (field[row][col-1] == 1){
+                    field[row][col+1] = 0;
+                }
+                if (field[row][col+1] == 1){
+                    field[row][col-1] = 0;
+                    field[row][col+2] = 0;
+                }
             }
+
+            if (field[row][col+1] == 1)
+                field[row][col+2] = 0;
+            else if (field[row-1][col] == 1)
+                field[row-2][col] = 0;
        }
        else if ((row+2 > 8) && (col < 7)){
             field[row-2][col-2] = -1;
@@ -178,7 +285,24 @@ public class Main{ //extends Application {
                 field[row+1][col-1] = -1;
                 field[row+1][col+1] = -1;
                 field[row+1][col+2] = -1;
+                if (field[row+1][col] == 1)
+                    field[row-1][col] = 0;
+                if (field[row-1][col] == 1){
+                    field[row+1][col] = 0;
+                    field[row-2][col] = 0;
+                }
             }
+
+            if (field[row][col+1] == 1){
+                field[row][col-1] = 0;
+                field[row][col+2] = 0;
+            }
+            else if (field[row][col-1] == 1){
+                field[row][col+1] = 0;
+                field[row][col-2] = 0;
+            }
+            else if (field[row-1][col] == 1)
+                field[row-2][col] = 0;
         }
 
        //first col
@@ -199,7 +323,23 @@ public class Main{ //extends Application {
                 field[row-1][col-1] = -1;
                 field[row+1][col-1] = -1;
                 field[row+2][col-1] = -1;
+                if (field[row][col-1] == 1)
+                    field[row][col+1] = 0;
+                else if (field[row][col+1] == 1){
+                    field[row][col-1] = 0;
+                    field[row][col+2] = 0;
+                }
             }
+            if (field[row-1][col] == 1){
+                field[row+1][col] = 0;
+                field[row-2][col] = 0;
+            }
+            else if (field[row+1][col] == 1){
+                field[row-1][col] = 0;
+                field[row+2][col] = 0;
+            }
+            else if (field[row][col+1] == 1)
+                field[row][col+2] = 0;
         }
 
        //everything between
@@ -224,7 +364,24 @@ public class Main{ //extends Application {
            field[row+2][col] = -1;
            field[row+2][col+1] = -1;
            field[row+2][col+2] = -1;
+           if (field[row][col+1] == 1){
+               field[row][col-1] = 0;
+               field[row][col+2] = 0;
+           }
+           else if (field[row][col-1] == 1){
+               field[row][col+1] = 0;
+               field[row][col-2] = 0;
+           }
+           if (field[row+1][col] == 1){
+               field[row-1][col] = 0;
+               field[row+2][col] = 0;
+           }
+           else if (field[row-1][col] == 1){
+               field[row+1][col] = 0;
+               field[row-2][col] = 0;
+           }
        }
+
    }
 
     private static void printField(){
@@ -284,8 +441,9 @@ public class Main{ //extends Application {
     }
 
     public static void main(String[] args) {
-        //addToField("i5");
+        addToField("f6");
         addToField("f5");
+        addToField("f7");
         printField();
 
     }
