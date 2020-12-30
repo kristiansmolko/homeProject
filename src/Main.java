@@ -1,14 +1,26 @@
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
 
-public class Main{ //extends Application {
+public class Main extends Application {
 
-   /*@Override
+   @Override
     public void start(Stage stage) throws Exception {
+       BorderPane root = new BorderPane();
+       TableView<TableData> table = createTable();
+       root.setCenter(table);
+       Scene scene = new Scene(root, 200, 241);
+       stage.setScene(scene);
+       stage.show();
+    }
 
-    }*/
    static int[][] field =  {{0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}};
    static ArrayList<Ship> ships = new ArrayList<>();
 
@@ -57,6 +69,7 @@ public class Main{ //extends Application {
                     field[row+2][col] = 0;
                 }
             }
+            field[row][col+2] = -1;
             field[row+1][col+1] = -1;
             field[row+1][col+2] = -1;
             field[row+2][col] = -1;
@@ -412,7 +425,6 @@ public class Main{ //extends Application {
     }
 
     private static void whereIsShip(){
-
        for (int i = 0; i < field.length; i++){
            for (int j = 0; j < field[0].length; j++){
                if (field[i][j] == 1){
@@ -440,11 +452,124 @@ public class Main{ //extends Application {
        }
     }
 
-    public static void main(String[] args) {
-        addToField("f6");
-        addToField("f5");
-        addToField("f7");
-        printField();
-
+    private ObservableList<TableData> getData(){
+        ObservableList<TableData> data = FXCollections.observableArrayList();
+        data.add(new TableData("X", "X", "X", "X", "X", "X", "X", "X", "X"));
+        data.add(new TableData("X", "X", "X", "X", "X", "X", "X", "X", "X"));
+        data.add(new TableData("X", "X", "X", "X", "X", "X", "X", "X", "X"));
+        data.add(new TableData("X", "X", "X", "X", "X", "X", "X", "X", "X"));
+        data.add(new TableData("X", "X", "X", "X", "X", "X", "X", "X", "X"));
+        data.add(new TableData("X", "X", "X", "X", "X", "X", "X", "X", "X"));
+        data.add(new TableData("X", "X", "X", "X", "X", "X", "X", "X", "X"));
+        data.add(new TableData("X", "X", "X", "X", "X", "X", "X", "X", "X"));
+        data.add(new TableData("X", "X", "X", "X", "X", "X", "X", "X", "X"));
+        return data;
     }
+
+    private TableView createTable(){
+        TableView<TableData> table = new TableView<>();
+        table.setEditable(false);
+        TextField text = new TextField();
+        BorderPane root = new BorderPane();
+        root.setTop(new Label("Setup"));
+        root.setBottom(text);
+
+        TableColumn<TableData, String> firstCol = createCol("1", "first");
+        TableColumn<TableData, String> secondCol = createCol("2", "second");
+        TableColumn<TableData, String> thirdCol = createCol("3", "third");
+        TableColumn<TableData, String> fourthCol = createCol("4", "fourth");
+        TableColumn<TableData, String> fifthCol = createCol("5", "fifth");
+        TableColumn<TableData, String> sixthCol = createCol("6", "sixth");
+        TableColumn<TableData, String> seventhCol = createCol("7", "seventh");
+        TableColumn<TableData, String> eightCol = createCol("8", "eight");
+        TableColumn<TableData, String> ninthCol = createCol("9", "ninth");
+
+
+        table.setItems(getData());
+        table.getColumns().addAll(firstCol, secondCol, thirdCol, fourthCol, fifthCol, sixthCol, seventhCol, eightCol, ninthCol);
+        table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        table.getSelectionModel().setCellSelectionEnabled(true);
+        table.setOnMouseClicked(mouseEvent -> {
+            TablePosition tablePosition = table.getSelectionModel().getSelectedCells().get(0);
+            int row = tablePosition.getRow();
+            int col = tablePosition.getColumn();
+            TableData td = table.getItems().get(table.getSelectionModel().getSelectedIndex());
+            switch (col) {
+                case 0 -> {
+                    if (field[row][0] == 1)
+                        td.setFirst("O");
+                    else
+                        td.setFirst("~");
+                }
+                case 1 -> {
+                    if (field[row][1] == 1)
+                        td.setSecond("O");
+                    else
+                        td.setSecond("~");
+                }
+                case 2 -> {
+                    if (field[row][2] == 1)
+                        td.setThird("O");
+                    else
+                        td.setThird("~");
+                }
+                case 3 -> {
+                    if (field[row][3] == 1)
+                        td.setFourth("O");
+                    else
+                        td.setFourth("~");
+                }
+                case 4 -> {
+                    if (field[row][4] == 1)
+                        td.setFifth("O");
+                    else
+                        td.setFifth("~");
+                }
+                case 5 -> {
+                    if (field[row][5] == 1)
+                        td.setSixth("O");
+                    else
+                        td.setSixth("~");
+                }
+                case 6 -> {
+                    if (field[row][6] == 1)
+                        td.setSeventh("O");
+                    else
+                        td.setSeventh("~");
+                }
+                case 7 -> {
+                    if (field[row][7] == 1)
+                        td.setEight("O");
+                    else
+                        td.setEight("~");
+                }
+                case 8 -> {
+                    if (field[row][8] == 1)
+                        td.setNinth("O");
+                    else
+                        td.setNinth("~");
+                }
+            }
+            table.refresh();
+        });
+        return table;
+    }
+
+    private TableColumn<TableData, String> createCol(String text, String where){
+        TableColumn<TableData, String> column = new TableColumn<>(text);
+        column.setCellValueFactory(new PropertyValueFactory<>(where));
+        column.setPrefWidth(20);
+        column.setEditable(false);
+        return column;
+    }
+
+    public static void main(String[] args) {
+        addToField("i1");
+        addToField("b1");
+        addToField("a2");
+        addToField("a1");
+        printField();
+        launch(args);
+    }
+
 }
