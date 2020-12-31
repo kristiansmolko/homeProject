@@ -14,7 +14,7 @@ public class Main extends Application {
    @Override
     public void start(Stage stage) throws Exception {
        BorderPane root = new BorderPane();
-       TableView<TableData> table = createTable();
+       TableView<TableData> table = createSetupForPlayer();
        root.setCenter(table);
        Scene scene = new Scene(root, 200, 241);
        stage.setScene(scene);
@@ -397,53 +397,364 @@ public class Main extends Application {
 
    }
 
-    private static void printField(){
-       setup();
-       System.out.println();
-       System.out.println("   1  2  3  4  5  6  7  8  9");
-       for (int i = 0; i < field.length; i++){
-           switch (i) {
-               case 0 -> System.out.print("A ");
-               case 1 -> System.out.print("B ");
-               case 2 -> System.out.print("C ");
-               case 3 -> System.out.print("D ");
-               case 4 -> System.out.print("E ");
-               case 5 -> System.out.print("F ");
-               case 6 -> System.out.print("G ");
-               case 7 -> System.out.print("H ");
-               case 8 -> System.out.print("I ");
-           }
-           for (int j = 0; j < field[0].length; j++){
-               switch (field[i][j]) {
-                   case 0 -> System.out.print(" ~ ");
-                   case 1 -> System.out.print(" S ");
-                   case -1 -> System.out.print(" n ");
-               }
-           }
-           System.out.println();
-       }
-    }
+    private static void addToField(int row, int col){
+        //if you can place your ship
+        if (field[row][col] == -1) {
+            System.out.println("You can't place your ship here");
+            return;
+        }
+        //create ship
+        field[row][col] = 1;
+        ships.add(new Ship(row, col));
 
-    private static void whereIsShip(){
-       for (int i = 0; i < field.length; i++){
-           for (int j = 0; j < field[0].length; j++){
-               if (field[i][j] == 1){
-                   System.out.print("Ship at: ");
-                   switch (i){
-                       case 0 -> System.out.print("A ");
-                       case 1 -> System.out.print("B ");
-                       case 2 -> System.out.print("C ");
-                       case 3 -> System.out.print("D ");
-                       case 4 -> System.out.print("E ");
-                       case 5 -> System.out.print("F ");
-                       case 6 -> System.out.print("G ");
-                       case 7 -> System.out.print("H ");
-                       case 8 -> System.out.print("I ");
-                   }
-                   System.out.print((j+1));
-               }
-           }
-       }
+        //1st and 2nd row
+        if ((row-2 < 0) && (col-1 < 0)){
+            if (!(row-1 < 0)) {
+                field[row - 1][col + 1] = -1;
+                field[row - 1][col + 2] = -1;
+                if (field[row-1][col] == 1)
+                    field[row+1][col] = 0;
+                if (field[row+1][col] == 1){
+                    field[row-1][col] = 0;
+                    field[row+2][col] = 0;
+                }
+            }
+            field[row][col+2] = -1;
+            field[row+1][col+1] = -1;
+            field[row+1][col+2] = -1;
+            field[row+2][col] = -1;
+            field[row+2][col+1] = -1;
+            field[row+2][col+2] = -1;
+            if (field[row+1][col] == 1)
+                field[row+2][col] = 0;
+        }
+        else if ((row-2 < 0) && (col-2 < 0)){
+            field[row][col+2] = -1;
+            field[row+1][col-1] = -1;
+            field[row+1][col+1] = -1;
+            field[row+1][col+2] = -1;
+            field[row+2][col-1] = -1;
+            field[row+2][col] = -1;
+            field[row+2][col+1] = -1;
+            field[row+2][col+2] = -1;
+            if (!(row-1 < 0)){
+                field[row-1][col-1] = -1;
+                field[row-1][col+1] = -1;
+                field[row-1][col+2] = -1;
+                if (field[row-1][col] == 1)
+                    field[row+1][col] = 0;
+                else if (field[row+1][col] == 1){
+                    field[row-1][col] = 0;
+                    field[row+2][col] = 0;
+                }
+            }
+            if (field[row][col-1] == 1)
+                field[row][col+1] = 0;
+            else if (field[row][col+1] == 1) {
+                field[row][col - 1] = 0;
+                field[row][col + 2] = 0;
+            }
+            else if (field[row+1][col] == 1)
+                field[row+2][col] = 0;
+        }
+        else if ((row-2 < 0) && (col < 7)){
+            if (!(row-1 < 0)) {
+                field[row - 1][col - 2] = -1;
+                field[row - 1][col - 1] = -1;
+                field[row - 1][col + 1] = -1;
+                field[row - 1][col + 2] = -1;
+                if (field[row-1][col] == 1)
+                    field[row+1][col] = 0;
+                else if (field[row+1][col] == 1){
+                    field[row-1][col] = 0;
+                    field[row+2][col] = 0;
+                }
+            }
+            field[row][col-2] = -1;
+            field[row][col+2] = -1;
+            field[row+1][col-2] = -1;
+            field[row+1][col-1] = -1;
+            field[row+1][col+1] = -1;
+            field[row+1][col+2] = -1;
+            field[row+2][col-2] = -1;
+            field[row+2][col-1] = -1;
+            field[row+2][col] = -1;
+            field[row+2][col+1] = -1;
+            field[row+2][col+2] = -1;
+            if (field[row][col-1] == 1) {
+                field[row][col+1] = 0;
+                field[row][col-2] = 0;
+            }
+            else if (field[row][col+1] == 1) {
+                field[row][col-1] = 0;
+                field[row][col+2] = 0;
+            }
+            else if (field[row+1][col] == 1)
+                field[row+2][col] = 0;
+
+        }
+        else if ((row-2 < 0) && (col+2 > 8)){
+            if (!(row-1 < 0)) {
+                field[row - 1][col - 2] = -1;
+                field[row - 1][col - 1] = -1;
+                if (field[row-1][col] == 1)
+                    field[row+1][col] = 0;
+            }
+            field[row][col-2] = -1;
+            field[row+1][col-2] = -1;
+            field[row+1][col-1] = -1;
+            field[row+2][col-2] = -1;
+            field[row+2][col-1] = -1;
+            field[row+2][col] = -1;
+            if (!(col+1 > 8)){
+                if (!(row-1 < 0)) field[row-1][col+1] = -1;
+                field[row+1][col+1] = -1;
+                field[row+2][col+1] = -1;
+                if (field[row][col+1] == 1)
+                    field[row][col-1] = 0;
+                else if (field[row][col-1] == 1){
+                    field[row][col+1] = 0;
+                    field[row][col-2] = 0;
+                }
+                if (field[row+1][col] == 1)
+                    field[row-1][col] = 0;
+            }
+            if (field[row][col-1] == 1)
+                field[row][col-2] = 0;
+            else if (field[row+1][col] == 1)
+                field[row+2][col] = 0;
+        }
+
+        //last col
+        else if ((row < 7) && (col+2 > 8)){
+            field[row-2][col-2] = -1;
+            field[row-2][col-1] = -1;
+            field[row-2][col] = -1;
+            field[row-1][col-2] = -1;
+            field[row-1][col-1] = -1;
+            field[row][col-2] = -1;
+            field[row+1][col-2] = -1;
+            field[row+1][col-1] = -1;
+            field[row+2][col-2] = -1;
+            field[row+2][col-1] = -1;
+            field[row+2][col] = -1;
+            if (!(col+1 > 8)){
+                field[row-2][col+1] = -1;
+                field[row-1][col+1] = -1;
+                field[row+1][col+1] = -1;
+                field[row+2][col+1] = -1;
+                if (field[row][col-1] == 1){
+                    field[row][col+1] = 0;
+                    field[row][col-2] = 0;
+                }
+            }
+            if (field[row-1][col] == 1){
+                field[row+1][col] = 0;
+                field[row-2][col] = 0;
+            }
+            else if (field[row+1][col] == 1){
+                field[row-1][col] = 0;
+                field[row+2][col] = 0;
+            }
+            else if (field[row][col-1] == 1){
+                field[row][col-2] = 0;
+            }
+        }
+
+        //last 2 rows
+        else if ((row+2 > 8) && (col+2 >8)){
+            field[row-2][col-2] = -1;
+            field[row-2][col-1] = -1;
+            field[row-2][col] = -1;
+            field[row-1][col-2] = -1;
+            field[row-1][col-1] = -1;
+            field[row][col-2] = -1;
+            if (!(row+1 > 8)){
+                field[row+1][col-2] = -1;
+                field[row+1][col-1] = -1;
+                if (field[row+1][col] == 1)
+                    field[row-1][col] = 0;
+                else if (field[row-1][col] == 1){
+                    field[row+1][col] = 0;
+                    field[row-2][col] = 0;
+                }
+            }
+            if (!(col+1 > 8)){
+                field[row-2][col+1] = -1;
+                field[row-1][col+1] = -1;
+                if (!(row+1 > 8)) field[row+1][col+1] = -1;
+                if (field[row][col+1] == 1)
+                    field[row][col-1] = 0;
+                if (field[row][col-1] == 1){
+                    field[row][col+1] = 0;
+                    field[row][col-2] = 0;
+                }
+            }
+            if (field[row-1][col] == 1)
+                field[row-2][col] = 0;
+            else if (field[row][col-1] == 1)
+                field[row][col-2] = 0;
+        }
+        else if ((row+2 > 8) && (col-2 < 0)){
+            field[row-2][col] = -1;
+            field[row-2][col+1] = -1;
+            field[row-2][col+2] = -1;
+            field[row-1][col+1] = -1;
+            field[row-1][col+2] = -1;
+            field[row][col+2] = -1;
+            if (!(row+1 > 8)){
+                field[row+1][col+1] = -1;
+                field[row+1][col+2] = -1;
+                if (field[row+1][col] == 1)
+                    field[row-1][col] = 0;
+                else if (field[row-1][col] == 1){
+                    field[row+1][col] = 0;
+                    field[row-2][col] = 0;
+                }
+            }
+            if (!(col-1 < 0)){
+                field[row-2][col-1] = -1;
+                field[row-1][col-1] = -1;
+                if (!(row+1 > 8)) field[row+1][col-1] = -1;
+                if (field[row][col-1] == 1){
+                    field[row][col+1] = 0;
+                }
+                if (field[row][col+1] == 1){
+                    field[row][col-1] = 0;
+                    field[row][col+2] = 0;
+                }
+            }
+
+            if (field[row][col+1] == 1)
+                field[row][col+2] = 0;
+            else if (field[row-1][col] == 1)
+                field[row-2][col] = 0;
+        }
+        else if ((row+2 > 8) && (col < 7)){
+            field[row-2][col-2] = -1;
+            field[row-2][col-1] = -1;
+            field[row-2][col] = -1;
+            field[row-2][col+1] = -1;
+            field[row-2][col+2] = -1;
+            field[row-1][col-2] = -1;
+            field[row-1][col-1] = -1;
+            field[row-1][col+1] = -1;
+            field[row-1][col+2] = -1;
+            field[row][col-2] = -1;
+            field[row][col+2] = -1;
+            if (!(row+1 > 8)) field[row+1][col-1] = -1;
+            if (!(row+1 > 8)){
+                field[row+1][col-2] = -1;
+                field[row+1][col-1] = -1;
+                field[row+1][col+1] = -1;
+                field[row+1][col+2] = -1;
+                if (field[row+1][col] == 1)
+                    field[row-1][col] = 0;
+                if (field[row-1][col] == 1){
+                    field[row+1][col] = 0;
+                    field[row-2][col] = 0;
+                }
+            }
+
+            if (field[row][col+1] == 1){
+                field[row][col-1] = 0;
+                field[row][col+2] = 0;
+            }
+            else if (field[row][col-1] == 1){
+                field[row][col+1] = 0;
+                field[row][col-2] = field[row][col-2]==-1?-1:0;
+            }
+            else if (field[row-1][col] == 1)
+                field[row-2][col] = 0;
+        }
+
+        //first col
+        else if ((row < 7) && (col-2 < 0)){
+            field[row-2][col] = -1;
+            field[row-2][col+1] = -1;
+            field[row-2][col+2] = -1;
+            field[row-1][col+1] = -1;
+            field[row-1][col+2] = -1;
+            field[row][col+2] = -1;
+            field[row+1][col+1] = -1;
+            field[row+1][col+2] = -1;
+            field[row+2][col] = -1;
+            field[row+2][col+1] = -1;
+            field[row+2][col+2] = -1;
+            if (!(col-1 < 0)){
+                field[row-2][col-1] = -1;
+                field[row-1][col-1] = -1;
+                field[row+1][col-1] = -1;
+                field[row+2][col-1] = -1;
+                if (field[row][col-1] == 1)
+                    field[row][col+1] = 0;
+                else if (field[row][col+1] == 1){
+                    field[row][col-1] = 0;
+                    field[row][col+2] = 0;
+                }
+            }
+            if (field[row-1][col] == 1){
+                field[row+1][col] = 0;
+                field[row-2][col] = 0;
+            }
+            else if (field[row+1][col] == 1){
+                field[row-1][col] = 0;
+                field[row+2][col] = 0;
+            }
+            if (field[row][col+1] == 1)
+                field[row][col+2] = 0;
+        }
+
+        //everything between
+        else {
+            field[row-2][col-2] = -1;
+            field[row-2][col-1] = -1;
+            field[row-2][col] = -1;
+            field[row-2][col+1] = -1;
+            field[row-2][col+2] = -1;
+            field[row-1][col-2] = -1;
+            field[row-1][col-1] = -1;
+            field[row-1][col+1] = -1;
+            field[row-1][col+2] = -1;
+            field[row][col-2] = -1;
+            field[row][col+2] = -1;
+            field[row+1][col-2] = -1;
+            field[row+1][col-1] = -1;
+            field[row+1][col+1] = -1;
+            field[row+1][col+2] = -1;
+            field[row+2][col-2] = -1;
+            field[row+2][col-1] = -1;
+            field[row+2][col] = -1;
+            field[row+2][col+1] = -1;
+            field[row+2][col+2] = -1;
+            if (field[row][col+1] == 1){
+                field[row][col-1] = 0;
+                field[row][col+2] = 0;
+            }
+            else if (field[row][col-1] == 1){
+                field[row][col+1] = 0;
+                field[row][col-2] = 0;
+            }
+            if (field[row+1][col] == 1){
+                field[row-1][col] = 0;
+                field[row+2][col] = 0;
+            }
+            else if (field[row-1][col] == 1){
+                field[row+1][col] = 0;
+                field[row-2][col] = 0;
+            }
+        }
+
+        setup();
+        if ((col < 6) && (field[row][col+3] == 1)) field[row][col+1] = -1;
+        if ((col < 5) && (field[row][col+4] == 1)) field[row][col+2] = -1;
+        if ((col > 2) && (field[row][col-3] == 1)) field[row][col-1] = -1;
+        if ((col > 3) && (field[row][col-4] == 1)) field[row][col-2] = -1;
+
+        if ((row < 6) && (field[row+3][col] == 1)) field[row+1][col] = -1;
+        if ((row < 5) && (field[row+4][col] == 1)) field[row+2][col] = -1;
+        if ((row > 2) && (field[row-3][col] == 1)) field[row-1][col] = -1;
+        if ((row > 3) && (field[row-4][col] == 1)) field[row-2][col] = -1;
     }
 
     private static void setup(){
@@ -481,7 +792,7 @@ public class Main extends Application {
         TableColumn<TableData, String> fifthCol = createCol("5", "fifth");
         TableColumn<TableData, String> sixthCol = createCol("6", "sixth");
         TableColumn<TableData, String> seventhCol = createCol("7", "seventh");
-        TableColumn<TableData, String> eightCol = createCol("8", "eight");
+        TableColumn<TableData, String> eightCol = createCol("8", "eighth");
         TableColumn<TableData, String> ninthCol = createCol("9", "ninth");
 
 
@@ -539,9 +850,9 @@ public class Main extends Application {
                 }
                 case 7 -> {
                     if (field[row][7] == 1)
-                        td.setEight("O");
+                        td.setEighth("O");
                     else
-                        td.setEight("~");
+                        td.setEighth("~");
                 }
                 case 8 -> {
                     if (field[row][8] == 1)
@@ -563,12 +874,46 @@ public class Main extends Application {
         return column;
     }
 
+    private TableView<TableData> createSetupForPlayer(){
+        TableView<TableData> table = new TableView<>();
+        table.setEditable(false);
+        TextField text = new TextField();
+        BorderPane root = new BorderPane();
+        root.setTop(new Label("Setup"));
+        root.setBottom(text);
+
+        TableColumn<TableData, String> firstCol = createCol("1", "one");
+        TableColumn<TableData, String> secondCol = createCol("2", "two");
+        TableColumn<TableData, String> thirdCol = createCol("3", "three");
+        TableColumn<TableData, String> fourthCol = createCol("4", "four");
+        TableColumn<TableData, String> fifthCol = createCol("5", "five");
+        TableColumn<TableData, String> sixthCol = createCol("6", "six");
+        TableColumn<TableData, String> seventhCol = createCol("7", "seven");
+        TableColumn<TableData, String> eightCol = createCol("8", "eight");
+        TableColumn<TableData, String> ninthCol = createCol("9", "nine");
+
+        table.setItems(getData());
+        table.getColumns().addAll(firstCol, secondCol, thirdCol, fourthCol, fifthCol, sixthCol, seventhCol, eightCol, ninthCol);
+        table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        table.getSelectionModel().setCellSelectionEnabled(true);
+        table.setOnMouseClicked(mouseEvent -> {
+            TablePosition tablePosition = table.getSelectionModel().getSelectedCells().get(0);
+            int row = tablePosition.getRow();
+            int col = tablePosition.getColumn();
+            addToField(row, col);
+
+            table.setItems(getData());
+            table.refresh();
+        });
+       return table;
+    }
+
     public static void main(String[] args) {
         addToField("i1");
         addToField("b1");
         addToField("a2");
         addToField("a1");
-        printField();
+        //printField();
         launch(args);
     }
 
