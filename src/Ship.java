@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 public class Ship {
     private int row;
     private int col;
