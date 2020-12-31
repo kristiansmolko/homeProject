@@ -1,17 +1,8 @@
-import javafx.beans.property.SimpleStringProperty;
-
 public class TableData {
-    private String first;
-    private String second;
-    private String third;
-    private String fourth;
-    private String fifth;
-    private String sixth;
-    private String seventh;
-    private String eight;
-    private String ninth;
+    private String first, second, third, fourth, fifth, sixth, seventh, eighth, ninth;
+    private int one, two, three, four, five, six, seven, eight, nine;
 
-    public TableData(String first, String second, String third, String fourth, String fifth, String sixth, String seventh, String eight, String ninth) {
+    public TableData(String first, String second, String third, String fourth, String fifth, String sixth, String seventh, String eighth, String ninth) {
         this.first = first;
         this.second = second;
         this.third = third;
@@ -19,8 +10,20 @@ public class TableData {
         this.fifth = fifth;
         this.sixth = sixth;
         this.seventh = seventh;
-        this.eight = eight;
+        this.eighth = eighth;
         this.ninth = ninth;
+    }
+
+    public TableData(int one, int two, int three, int four, int five, int six, int seven, int eight, int nine){
+        this.one = one;
+        this.two = two;
+        this.three = three;
+        this.four = four;
+        this.five = five;
+        this.six = six;
+        this.seven = seven;
+        this.eight = eight;
+        this.nine = nine;
     }
 
     public String getFirst() {
@@ -79,12 +82,12 @@ public class TableData {
         this.seventh = seventh;
     }
 
-    public String getEight() {
-        return eight;
+    public String getEighth() {
+        return eighth;
     }
 
-    public void setEight(String eight) {
-        this.eight = eight;
+    public void setEighth(String eighth) {
+        this.eighth = eighth;
     }
 
     public String getNinth() {
@@ -93,5 +96,113 @@ public class TableData {
 
     public void setNinth(String ninth) {
         this.ninth = ninth;
+    }
+
+    public String getOne() {
+        return switch (one) {
+            case 1 -> "S";
+            case -1 -> "n";
+            default -> "~";
+        };
+    }
+
+    public void setOne(int one) {
+        this.one = one;
+    }
+
+    public String getTwo() {
+        return switch (two) {
+            case 1 -> "S";
+            case -1 -> "n";
+            default -> "~";
+        };
+    }
+
+    public void setTwo(int two) {
+        this.two = two;
+    }
+
+    public String getThree() {
+        return switch (three) {
+            case 1 -> "S";
+            case -1 -> "n";
+            default -> "~";
+        };
+    }
+
+    public void setThree(int three) {
+        this.three = three;
+    }
+
+    public String getFour() {
+        return switch (four) {
+            case 1 -> "S";
+            case -1 -> "n";
+            default -> "~";
+        };
+    }
+
+    public void setFour(int four) {
+        this.four = four;
+    }
+
+    public String getFive() {
+        return switch (five) {
+            case 1 -> "S";
+            case -1 -> "n";
+            default -> "~";
+        };
+    }
+
+    public void setFive(int five) {
+        this.five = five;
+    }
+
+    public String getSix() {
+        return switch (six) {
+            case 1 -> "S";
+            case -1 -> "n";
+            default -> "~";
+        };
+    }
+
+    public void setSix(int six) {
+        this.six = six;
+    }
+
+    public String getSeven() {
+        return switch (seven) {
+            case 1 -> "S";
+            case -1 -> "n";
+            default -> "~";
+        };
+    }
+
+    public void setSeven(int seven) {
+        this.seven = seven;
+    }
+
+    public String getEight() {
+        return switch (eight) {
+            case 1 -> "S";
+            case -1 -> "n";
+            default -> "~";
+        };
+    }
+
+    public void setEight(int eight) {
+        this.eight = eight;
+    }
+
+    public String getNine() {
+        return switch (nine) {
+            case 1 -> "S";
+            case -1 -> "n";
+            default -> "~";
+        };
+    }
+
+    public void setNine(int nine) {
+        this.nine = nine;
     }
 }
