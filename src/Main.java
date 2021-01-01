@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -16,31 +17,77 @@ public class Main extends Application {
        BorderPane root = new BorderPane();
        TableView<TableData> table = createSetupForPlayer();
        TableView<TableData> tableStart = createTable();
+       GridPane newSceneGrid = new GridPane();
+       Button reset = new Button("Reset");
+       reset.setOnAction(e -> {
+           for (int i = 0; i < field.length; i++)
+               for (int j = 0; j < field[0].length; j++)
+                   field[i][j] = 0;
+
+           shipPos = new int[9][2];
+           ships = new ArrayList<>();
+           table.setItems(getDataForSetup());
+           table.refresh();
+       });
        Button newScene = new Button("Start");
        newScene.setOnAction(actionEvent -> {
-           BorderPane root1 = new BorderPane();
-           root1.setCenter(tableStart);
-           Scene scene2 = new Scene(root1, 200, 250);
-           stage.setScene(scene2);
-           stage.show();
+           if ((count1 == 2) && (count2 == 2) && (count3 == 1)) {
+               BorderPane root1 = new BorderPane();
+               root1.setCenter(tableStart);
+               Scene scene2 = new Scene(root1, 200, 250);
+               stage.setScene(scene2);
+               stage.show();
+           } else System.out.println("Incomplete board!");
        });
+       newSceneGrid.addRow(0, newScene, reset);
        root.setCenter(table);
-       root.setBottom(newScene);
+       root.setBottom(newSceneGrid);
        Scene scene = new Scene(root, 200, 265);
        stage.setScene(scene);
        stage.show();
     }
 
-   static int[][] field =  {{0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}};
-   static ArrayList<Ship> ships = new ArrayList<>();
+    static int[][] field =  {{0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}};
+    static ArrayList<Ship> ships = new ArrayList<>();
+    static int[][] shipPos = new int[9][2];
+    static int count1, count2, count3;
 
     private static void addToField(int row, int col){
         //if you can place your ship
         if (field[row][col] == -1) {
-            System.out.println("You can't place your ship here");
+            System.out.println("You can't place your ship here!");
+            return;
+        }
+        else if (field[row][col] == 1){
+            System.out.println("You already have ship here!");
             return;
         }
         //create ship
+        if (((row > 2) && (field[row-3][col] == 1) && (field[row-2][col] == 1) && (field[row-1][col] == 1)) ||
+                ((row < 6) && (field[row+3][col] == 1) && (field[row+2][col] == 1) && (field[row+1][col] == 1)) ||
+                ((col > 2) && (field[row][col-3] == 1) && (field[row][col-2] == 1) && (field[row][col-1] == 1)) ||
+                ((col < 6) && (field[row][col+3] == 1) && (field[row][col+2] == 1) && (field[row][col+1] == 1))) {
+            System.out.println("You can't have bigger ship");
+            return;
+        }
+        else if ((((row > 1) && (field[row-2][col] == 1) && (field[row-1][col] == 1)) && count3 > 0) ||
+                (((row < 7) && (field[row+2][col] == 1) && (field[row+1][col] == 1)) && count3 > 0)) {
+            System.out.println("You can't have more of this type!");
+            return;
+        }
+        else if (((((col < 7) && (field[row][col+2] == 1) && (field[row][col+1] == 1)) && count3 > 0)) ||
+                (((col > 1) && (field[row][col-2] == 1) && (field[row][col-1] == 1)) && count3 > 0)){
+            System.out.println("You can't have more of this type!");
+            return;
+        }
+        else if (((row > 0) && (field[row-1][col] == 1) && count2 > 1) ||
+                ((row < 8) && (field[row+1][col] == 1) && count2 > 1) ||
+                ((col > 0) && (field[row][col-1] == 1) && count2 > 1) ||
+                ((col < 8) && (field[row][col+1] == 1) && count2 > 1)){
+            System.out.println("You can't have more of this type!");
+            return;
+        }
+
         field[row][col] = 1;
         ships.add(new Ship(row, col));
 
@@ -416,10 +463,68 @@ public class Main extends Application {
         if ((row > 3) && (col < 7) && ((field[row-4][col+1] == 1) || (field[row-4][col+2] == 1))) field[row-2][col] = field[row-2][col]==1?1:-1;
     }
 
+    private static void scanField(){
+        for (int i = 0; i < shipPos.length; i++){
+            if ((i < shipPos.length - 1) && (shipPos[i][0] == shipPos[i + 1][0])) {
+                if ((i < shipPos.length - 2) && (shipPos[i][0] == shipPos[i + 1][0]) && (shipPos[i][0] == shipPos[i + 2][0])) {
+                    if ((shipPos[i][1] + 1 == shipPos[i + 1][1]) && (shipPos[i][1] + 1 == shipPos[i + 2][1] + 2)) {
+                        count3 -= -1; //453
+                        i -= -2;
+                    } else if ((shipPos[i][1] + 1 == shipPos[i + 1][1]) && (shipPos[i][1] + 1 == shipPos[i + 2][1] - 1)) {
+                        count3 -= -1; //345
+                        i -= -2;
+                    } else if ((shipPos[i][1] == shipPos[i + 1][1] + 1) && (shipPos[i][1] == shipPos[i + 2][1] + 2)) {
+                        count3 -= -1; //543
+                        i -= -2;
+                    } else if ((shipPos[i][1] == shipPos[i + 1][1] + 1) && (shipPos[i][1] + 1 == shipPos[i + 2][1])) {
+                        count3 -= -1; //435
+                        i -= -2;
+                    } else if ((shipPos[i][1] + 1 == shipPos[i + 1][1]) || (shipPos[i][1] == shipPos[i + 1][1] + 1)) {
+                        count2 -= -1;
+                        i++;
+                    } else if (!((shipPos[i][0] == 0) && (shipPos[i][1] == 0)))
+                        count1 -= -1;
+                } else if ((shipPos[i][1] + 1 == shipPos[i + 1][1]) || (shipPos[i][1] == shipPos[i + 1][1] + 1)) {
+                    count2 -= -1;
+                    i++;
+                }
+            } else if ((i < shipPos.length - 1) && (shipPos[i][1] == shipPos[i + 1][1])) {
+                if ((i < shipPos.length - 2) && (shipPos[i][1] == shipPos[i + 1][1]) && (shipPos[i][1] == shipPos[i + 2][1])) {
+                    if ((shipPos[i][0] + 1 == shipPos[i + 1][0]) && (shipPos[i][0] + 1 == shipPos[i + 2][0] + 2)) {
+                        count3 -= -1; //453
+                        i -= -2;
+                    } else if ((shipPos[i][0] + 1 == shipPos[i + 1][0]) && (shipPos[i][0] + 1 == shipPos[i + 2][0] - 1)) {
+                        count3 -= -1; //345
+                        i -= -2;
+                    } else if ((shipPos[i][0] == shipPos[i + 1][0] + 1) && (shipPos[i][0] == shipPos[i + 2][0] + 2)) {
+                        count3 -= -1; //543
+                        i -= -2;
+                    } else if ((shipPos[i][0] == shipPos[i + 1][0] + 1) && (shipPos[i][0] + 1 == shipPos[i + 2][0])) {
+                        count3 -= -1; //435
+                        i -= -2;
+                    } else if ((shipPos[i][0] + 1 == shipPos[i + 1][0]) || (shipPos[i][0] == shipPos[i + 1][0] + 1)) {
+                        count2 -= -1;
+                        i++;
+                    } else if (!((shipPos[i][0] == 0) && (shipPos[i][1] == 0)))
+                        count1 -= -1;
+                } else if ((shipPos[i][0] + 1 == shipPos[i + 1][0]) || (shipPos[i][0] == shipPos[i + 1][0] + 1)) {
+                    count2 -= -1;
+                    i++;
+                } else if (!((shipPos[i][0] == 0) && (shipPos[i][1] == 0)))
+                    count1 -= -1;
+            } else if (!((shipPos[i][0] == 0) && (shipPos[i][1] == 0)))
+                count1 -= -1;
+        }
+    }
+
     private static void setup(){
-       for (Ship ship : ships){
-           field[ship.getRow()][ship.getCol()] = 1;
-       }
+        int i = 0;
+        for (Ship ship : ships){
+            field[ship.getRow()][ship.getCol()] = 1;
+            shipPos[i++] = new int[] {ship.getRow(), ship.getCol()};
+        }
+        count1 = 0; count2 = 0; count3 = 0;
+        scanField();
     }
 
     private ObservableList<TableData> getDataForSetup(){
