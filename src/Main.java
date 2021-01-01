@@ -231,6 +231,9 @@ public class Main extends Application {
                     field[row][col+1] = 0;
                     field[row][col-2] = 0;
                 }
+                if (field[row][col+1] == 1){
+                    field[row][col-1] = 0;
+                }
             }
             if (field[row-1][col] == 1){
                 field[row+1][col] = 0;
