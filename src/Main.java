@@ -17,7 +17,7 @@ public class Main extends Application {
        BorderPane root = new BorderPane();
        TableView<TableData> table = createSetupForPlayer();
        TableView<TableData> tableStart = createTable();
-       GridPane newSceneGrid = new GridPane();
+       BorderPane newSceneGrid = new BorderPane();
        Button reset = new Button("Reset");
        reset.setOnAction(e -> {
            for (int i = 0; i < field.length; i++)
@@ -39,7 +39,8 @@ public class Main extends Application {
                stage.show();
            } else System.out.println("Incomplete board!");
        });
-       newSceneGrid.addRow(0, newScene, reset);
+       newSceneGrid.setRight(reset);
+       newSceneGrid.setLeft(newScene);
        root.setCenter(table);
        root.setBottom(newSceneGrid);
        Scene scene = new Scene(root, 200, 265);
@@ -490,7 +491,8 @@ public class Main extends Application {
                 } else if ((shipPos[i][1] + 1 == shipPos[i + 1][1]) || (shipPos[i][1] == shipPos[i + 1][1] + 1)) {
                     count2 -= -1;
                     i++;
-                }
+                } else if (!((shipPos[i][0] == 0) && (shipPos[i][1] == 0)))
+                    count1 -= -1;
             } else if ((i < shipPos.length - 1) && (shipPos[i][1] == shipPos[i + 1][1])) {
                 if ((i < shipPos.length - 2) && (shipPos[i][1] == shipPos[i + 1][1]) && (shipPos[i][1] == shipPos[i + 2][1])) {
                     if ((shipPos[i][0] + 1 == shipPos[i + 1][0]) && (shipPos[i][0] + 1 == shipPos[i + 2][0] + 2)) {
