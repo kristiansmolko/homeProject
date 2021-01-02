@@ -1,9 +1,11 @@
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -16,8 +18,8 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
        BorderPane root = new BorderPane();
        TableView<TableData> table = createSetupForPlayer();
-       TableView<TableData> tableStart = createTable();
        BorderPane newSceneGrid = new BorderPane();
+       //reset field
        Button reset = new Button("Reset");
        reset.setOnAction(e -> {
            for (int i = 0; i < field.length; i++)
@@ -29,11 +31,11 @@ public class Main extends Application {
            table.setItems(getDataForSetup());
            table.refresh();
        });
+
        Button newScene = new Button("Start");
        newScene.setOnAction(actionEvent -> {
            if ((count1 == 2) && (count2 == 2) && (count3 == 1)) {
-               BorderPane root1 = new BorderPane();
-               root1.setCenter(tableStart);
+               BorderPane root1 = game();
                Scene scene2 = new Scene(root1, 200, 250);
                stage.setScene(scene2);
                stage.show();
@@ -560,7 +562,7 @@ public class Main extends Application {
        return data;
     }
 
-    private TableView<TableData> createTable(){
+    private TableView<TableData> createTable(ObservableList data){
         TableView<TableData> table = new TableView<>();
         table.setEditable(false);
         TextField text = new TextField();
@@ -579,11 +581,93 @@ public class Main extends Application {
         TableColumn<TableData, String> ninthCol = createCol("9", "ninth");
 
 
-        table.setItems(getData());
+        table.setItems(data);
+        table.getColumns().addAll(firstCol, secondCol, thirdCol, fourthCol, fifthCol, sixthCol, seventhCol, eightCol, ninthCol);
+        table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        table.getSelectionModel().setCellSelectionEnabled(true);
+        return table;
+    }
+
+    private TableColumn<TableData, String> createCol(String text, String where){
+        TableColumn<TableData, String> column = new TableColumn<>(text);
+        column.setCellValueFactory(new PropertyValueFactory<>(where));
+        column.setPrefWidth(20);
+        column.setEditable(false);
+        return column;
+    }
+
+    private TableView<TableData> createSetupForPlayer(){
+        TableView<TableData> table = new TableView<>();
+        table.setEditable(false);
+
+        TableColumn<TableData, String> firstCol = createCol("1", "one");
+        TableColumn<TableData, String> secondCol = createCol("2", "two");
+        TableColumn<TableData, String> thirdCol = createCol("3", "three");
+        TableColumn<TableData, String> fourthCol = createCol("4", "four");
+        TableColumn<TableData, String> fifthCol = createCol("5", "five");
+        TableColumn<TableData, String> sixthCol = createCol("6", "six");
+        TableColumn<TableData, String> seventhCol = createCol("7", "seven");
+        TableColumn<TableData, String> eightCol = createCol("8", "eight");
+        TableColumn<TableData, String> ninthCol = createCol("9", "nine");
+
+        table.setItems(getDataForSetup());
         table.getColumns().addAll(firstCol, secondCol, thirdCol, fourthCol, fifthCol, sixthCol, seventhCol, eightCol, ninthCol);
         table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         table.getSelectionModel().setCellSelectionEnabled(true);
         table.setOnMouseClicked(mouseEvent -> {
+            TablePosition tablePosition = table.getSelectionModel().getSelectedCells().get(0);
+            int row = tablePosition.getRow();
+            int col = tablePosition.getColumn();
+            addToField(row, col);
+
+            table.setItems(getDataForSetup());
+            table.refresh();
+        });
+       return table;
+    }
+
+    static int turn = 1;
+    private BorderPane game(){
+        BorderPane root = new BorderPane();
+        TableView<TableData> player1Table = createTable(getData());
+        TableView<TableData> player2Table = createTable(getData());
+        BorderPane gameSetup = new BorderPane();
+        player1Table.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
+            if (turn == 1){
+                player1Table.setOnMouseClicked(getMouse(player1Table));
+                player2Table.setOnMouseClicked(null);
+                System.out.println("Player 1, " + turn);
+            }
+            else
+                player1Table.setOnMouseClicked(null);
+
+        });
+
+        player2Table.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
+            if (turn == 2) {
+                player1Table.setOnMouseClicked(null);
+                player2Table.setOnMouseClicked(getMouse(player2Table));
+                System.out.println("Player 2, " + turn);
+            }
+            else {
+                player2Table.setOnMouseClicked(null);
+            }
+        });
+
+        gameSetup.setLeft(player1Table);
+        gameSetup.setRight(player2Table);
+        root.setCenter(gameSetup);
+        return root;
+    }
+
+    private void nextTurn(){
+        turn++;
+        if (turn > 2)
+            turn = 1;
+    }
+
+    private EventHandler<MouseEvent> getMouse(TableView<TableData> table){
+        EventHandler<MouseEvent> mouse = mouseEvent -> {
             TablePosition tablePosition = table.getSelectionModel().getSelectedCells().get(0);
             int row = tablePosition.getRow();
             int col = tablePosition.getColumn();
@@ -644,47 +728,11 @@ public class Main extends Application {
                         td.setNinth("~");
                 }
             }
+            if ((field[row][col] == 0) || (field[row][col] == -1))
+                nextTurn();
             table.refresh();
-        });
-        return table;
-    }
-
-    private TableColumn<TableData, String> createCol(String text, String where){
-        TableColumn<TableData, String> column = new TableColumn<>(text);
-        column.setCellValueFactory(new PropertyValueFactory<>(where));
-        column.setPrefWidth(20);
-        column.setEditable(false);
-        return column;
-    }
-
-    private TableView<TableData> createSetupForPlayer(){
-        TableView<TableData> table = new TableView<>();
-        table.setEditable(false);
-
-        TableColumn<TableData, String> firstCol = createCol("1", "one");
-        TableColumn<TableData, String> secondCol = createCol("2", "two");
-        TableColumn<TableData, String> thirdCol = createCol("3", "three");
-        TableColumn<TableData, String> fourthCol = createCol("4", "four");
-        TableColumn<TableData, String> fifthCol = createCol("5", "five");
-        TableColumn<TableData, String> sixthCol = createCol("6", "six");
-        TableColumn<TableData, String> seventhCol = createCol("7", "seven");
-        TableColumn<TableData, String> eightCol = createCol("8", "eight");
-        TableColumn<TableData, String> ninthCol = createCol("9", "nine");
-
-        table.setItems(getDataForSetup());
-        table.getColumns().addAll(firstCol, secondCol, thirdCol, fourthCol, fifthCol, sixthCol, seventhCol, eightCol, ninthCol);
-        table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        table.getSelectionModel().setCellSelectionEnabled(true);
-        table.setOnMouseClicked(mouseEvent -> {
-            TablePosition tablePosition = table.getSelectionModel().getSelectedCells().get(0);
-            int row = tablePosition.getRow();
-            int col = tablePosition.getColumn();
-            addToField(row, col);
-
-            table.setItems(getDataForSetup());
-            table.refresh();
-        });
-       return table;
+        };
+        return mouse;
     }
 
     public static void main(String[] args) {
