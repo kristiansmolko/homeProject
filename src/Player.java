@@ -28,4 +28,10 @@ public class Player {
     public void setCount(int count) {
         this.count = count;
     }
+
+    public boolean isWinner(){
+        if (count == 9)
+            return true;
+        return false;
+    }
 }
