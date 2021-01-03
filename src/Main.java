@@ -1,24 +1,32 @@
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Main extends Application {
+    Player player1 = new Player(1);
+    Player player2 = new Player(2);
 
    @Override
     public void start(Stage stage) throws Exception {
        BorderPane root = new BorderPane();
        TableView<TableData> table = createSetupForPlayer();
-       BorderPane newSceneGrid = new BorderPane();
+       BorderPane sceneGrid = new BorderPane();
        //reset field
        Button reset = new Button("Reset");
        reset.setOnAction(e -> {
@@ -31,21 +39,62 @@ public class Main extends Application {
            table.setItems(getDataForSetup());
            table.refresh();
        });
-
-       Button newScene = new Button("Start");
+        //go to next player setup
+       Button newScene = new Button("Next player");
        newScene.setOnAction(actionEvent -> {
            if ((count1 == 2) && (count2 == 2) && (count3 == 1)) {
-               BorderPane root1 = game();
-               Scene scene2 = new Scene(root1, 200, 250);
+               BorderPane nextTable = new BorderPane();
+               BorderPane newSceneGrid = new BorderPane();
+               //set player field
+               player1.setField(field);
+               //empty static field
+               field = player2.getField();
+               //clear ships
+               shipPos = new int[9][2];
+               ships = new ArrayList<>();
+               //create table 2
+               TableView<TableData> table2 = createSetupForPlayer();
+               Button startGame = new Button("Start game");
+               startGame.setOnAction(e -> {
+                   if ((count1 == 2) && (count2 == 2) && (count3 == 1)) {
+                       player2.setField(field);
+                       BorderPane game = game();
+                       Scene scene2 = new Scene(game, 500, 300);
+                       stage.setTitle("Game");
+                       stage.setScene(scene2);
+                       stage.show();
+                   } else
+                       System.out.println("Incomplete board!");
+               });
+               reset.setOnAction(e -> {
+                   for (int i = 0; i < field.length; i++)
+                       for (int j = 0; j < field[0].length; j++)
+                           field[i][j] = 0;
+
+                   shipPos = new int[9][2];
+                   ships = new ArrayList<>();
+                   table2.setItems(getDataForSetup());
+                   table2.refresh();
+               });
+               newSceneGrid.setLeft(startGame);
+               newSceneGrid.setRight(reset);
+               nextTable.setCenter(table2);
+               nextTable.setBottom(newSceneGrid);
+
+               BorderPane root1 = new BorderPane();
+               root1.setCenter(nextTable);
+               Scene scene2 = new Scene(root1, 250, 300);
+               stage.setTitle("Player 2 setup");
                stage.setScene(scene2);
                stage.show();
            } else System.out.println("Incomplete board!");
        });
-       newSceneGrid.setRight(reset);
-       newSceneGrid.setLeft(newScene);
+       sceneGrid.setRight(reset);
+       sceneGrid.setLeft(newScene);
        root.setCenter(table);
-       root.setBottom(newSceneGrid);
-       Scene scene = new Scene(root, 200, 265);
+       root.setBottom(sceneGrid);
+       Scene scene = new Scene(root, 250, 300);
+       stage.setTitle("Player 1 setup");
        stage.setScene(scene);
        stage.show();
     }
@@ -565,10 +614,7 @@ public class Main extends Application {
     private TableView<TableData> createTable(ObservableList data){
         TableView<TableData> table = new TableView<>();
         table.setEditable(false);
-        TextField text = new TextField();
-        BorderPane root = new BorderPane();
-        root.setTop(new Label("Game"));
-        root.setBottom(text);
+        table.setMaxWidth(182); table.setMaxHeight(245);
 
         TableColumn<TableData, String> firstCol = createCol("1", "first");
         TableColumn<TableData, String> secondCol = createCol("2", "second");
@@ -599,6 +645,7 @@ public class Main extends Application {
     private TableView<TableData> createSetupForPlayer(){
         TableView<TableData> table = new TableView<>();
         table.setEditable(false);
+        table.setMaxWidth(182); table.setMaxHeight(245);
 
         TableColumn<TableData, String> firstCol = createCol("1", "one");
         TableColumn<TableData, String> secondCol = createCol("2", "two");
@@ -631,31 +678,69 @@ public class Main extends Application {
         BorderPane root = new BorderPane();
         TableView<TableData> player1Table = createTable(getData());
         TableView<TableData> player2Table = createTable(getData());
+        Label player1Won = new Label("You have WON!");
+        Label player2Won = new Label("You have WON!");
+        StackPane player1Tab = new StackPane();
+        StackPane player2Tab = new StackPane();
+        //player1Won.setVisible(false); player2Won.setVisible(false);
+        player1Won.setMaxWidth(200); player1Won.setMaxHeight(50);
+        player1Won.setTranslateX(0);
+        player1Won.setFont(Font.font("Times New Roman", FontWeight.EXTRA_BOLD, FontPosture.REGULAR, 25));
+        player1Won.setTextFill(Color.GREEN);
+        player2Won.setMaxWidth(200); player2Won.setMaxHeight(50);
+        player2Won.setTranslateX(0);
+        player2Won.setFont(Font.font("Times New Roman", FontWeight.EXTRA_BOLD, FontPosture.REGULAR, 25));
+        player2Won.setTextFill(Color.GREEN);
+
         BorderPane gameSetup = new BorderPane();
+        player1Won.setVisible(false);
+        player2Won.setVisible(false);
         player1Table.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
             if (turn == 1){
-                player1Table.setOnMouseClicked(getMouse(player1Table));
-                player2Table.setOnMouseClicked(null);
-                System.out.println("Player 1, " + turn);
+                if (player2.getCount() == 9) {
+                    player1Won.setVisible(true);
+                    player1Table.setOnMouseClicked(null);
+                    player2Table.setOnMouseClicked(null);
+                }
+                else if (player1.getCount() == 9) {
+                    player2Won.setVisible(true);
+                    player1Table.setOnMouseClicked(null);
+                    player2Table.setOnMouseClicked(null);
+                }else {
+                    player1Table.setOnMouseClicked(getMouse(player1Table, player1));
+                    player2Table.setOnMouseClicked(null);
+                }
             }
-            else
+            else {
                 player1Table.setOnMouseClicked(null);
-
+            }
         });
 
         player2Table.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
             if (turn == 2) {
-                player1Table.setOnMouseClicked(null);
-                player2Table.setOnMouseClicked(getMouse(player2Table));
-                System.out.println("Player 2, " + turn);
+                if (player1.getCount() == 9) {
+                    player2Won.setVisible(true);
+                    player1Table.setOnMouseClicked(null);
+                    player2Table.setOnMouseClicked(null);
+                } else if (player2.getCount() == 9) {
+                    player1Won.setVisible(true);
+                    player1Table.setOnMouseClicked(null);
+                    player2Table.setOnMouseClicked(null);
+                }else {
+                    player1Table.setOnMouseClicked(null);
+                    player2Table.setOnMouseClicked(getMouse(player2Table, player2));
+                }
             }
             else {
                 player2Table.setOnMouseClicked(null);
+
             }
         });
 
-        gameSetup.setLeft(player1Table);
-        gameSetup.setRight(player2Table);
+        player1Tab.getChildren().addAll(player1Table, player1Won);
+        player2Tab.getChildren().addAll(player2Table, player2Won);
+        gameSetup.setLeft(player1Tab);
+        gameSetup.setRight(player2Tab);
         root.setCenter(gameSetup);
         return root;
     }
@@ -666,8 +751,9 @@ public class Main extends Application {
             turn = 1;
     }
 
-    private EventHandler<MouseEvent> getMouse(TableView<TableData> table){
+    private EventHandler<MouseEvent> getMouse(TableView<TableData> table, Player player){
         EventHandler<MouseEvent> mouse = mouseEvent -> {
+            field = player.getField();
             TablePosition tablePosition = table.getSelectionModel().getSelectedCells().get(0);
             int row = tablePosition.getRow();
             int col = tablePosition.getColumn();
@@ -730,6 +816,8 @@ public class Main extends Application {
             }
             if ((field[row][col] == 0) || (field[row][col] == -1))
                 nextTurn();
+            else
+                player.setCount(player.getCount() + 1);
             table.refresh();
         };
         return mouse;
