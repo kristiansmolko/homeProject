@@ -33,7 +33,7 @@ public class TableData {
 
     public ImageView getFirst() {
         ImageView img = new ImageView(new Image(first));
-        img.setFitWidth(20); img.setFitHeight(20);
+        img.setFitWidth(40); img.setFitHeight(40);
         img.setTranslateX(-5);
         return img;
     }
@@ -44,7 +44,7 @@ public class TableData {
 
     public ImageView getSecond() {
         ImageView img = new ImageView(new Image(second));
-        img.setFitWidth(20); img.setFitHeight(20);
+        img.setFitWidth(40); img.setFitHeight(40);
         img.setTranslateX(-5);
         return img;
     }
@@ -55,7 +55,7 @@ public class TableData {
 
     public ImageView getThird() {
         ImageView img = new ImageView(new Image(third));
-        img.setFitWidth(20); img.setFitHeight(20);
+        img.setFitWidth(40); img.setFitHeight(40);
         img.setTranslateX(-5);
         return img;
     }
@@ -66,7 +66,7 @@ public class TableData {
 
     public ImageView getFourth() {
         ImageView img = new ImageView(new Image(fourth));
-        img.setFitWidth(20); img.setFitHeight(20);
+        img.setFitWidth(40); img.setFitHeight(40);
         img.setTranslateX(-5);
         return img;
     }
@@ -77,7 +77,7 @@ public class TableData {
 
     public ImageView getFifth() {
         ImageView img = new ImageView(new Image(fifth));
-        img.setFitWidth(20); img.setFitHeight(20);
+        img.setFitWidth(40); img.setFitHeight(40);
         img.setTranslateX(-5);
         return img;
     }
@@ -88,7 +88,7 @@ public class TableData {
 
     public ImageView getSixth() {
         ImageView img = new ImageView(new Image(sixth));
-        img.setFitWidth(20); img.setFitHeight(20);
+        img.setFitWidth(40); img.setFitHeight(40);
         img.setTranslateX(-5);
         return img;
     }
@@ -99,7 +99,7 @@ public class TableData {
 
     public ImageView getSeventh() {
         ImageView img = new ImageView(new Image(seventh));
-        img.setFitWidth(20); img.setFitHeight(20);
+        img.setFitWidth(40); img.setFitHeight(40);
         img.setTranslateX(-5);
         return img;
     }
@@ -110,7 +110,7 @@ public class TableData {
 
     public ImageView getEighth() {
         ImageView img = new ImageView(new Image(eighth));
-        img.setFitWidth(20); img.setFitHeight(20);
+        img.setFitWidth(40); img.setFitHeight(40);
         img.setTranslateX(-5);
         return img;
     }
@@ -121,7 +121,7 @@ public class TableData {
 
     public ImageView getNinth() {
         ImageView img = new ImageView(new Image(ninth));
-        img.setFitWidth(20); img.setFitHeight(20);
+        img.setFitWidth(40); img.setFitHeight(40);
         img.setTranslateX(-5);
         return img;
     }
