@@ -9,18 +9,23 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Main extends Application {
     Player player1 = new Player(1);
     Player player2 = new Player(2);
+    MediaPlayer explosion;
 
    @Override
     public void start(Stage stage) throws Exception {
@@ -59,7 +64,7 @@ public class Main extends Application {
                    if ((count1 == 2) && (count2 == 2) && (count3 == 1)) {
                        player2.setField(field);
                        BorderPane game = game();
-                       Scene scene2 = new Scene(game, 500, 300);
+                       Scene scene2 = new Scene(game, 800, 500);
                        stage.setTitle("Game");
                        stage.setScene(scene2);
                        stage.show();
@@ -599,32 +604,32 @@ public class Main extends Application {
 
     private ObservableList<TableData> getData(){
        ObservableList<TableData> data = FXCollections.observableArrayList();
-       data.add(new TableData("X", "X", "X", "X", "X", "X", "X", "X", "X"));
-       data.add(new TableData("X", "X", "X", "X", "X", "X", "X", "X", "X"));
-       data.add(new TableData("X", "X", "X", "X", "X", "X", "X", "X", "X"));
-       data.add(new TableData("X", "X", "X", "X", "X", "X", "X", "X", "X"));
-       data.add(new TableData("X", "X", "X", "X", "X", "X", "X", "X", "X"));
-       data.add(new TableData("X", "X", "X", "X", "X", "X", "X", "X", "X"));
-       data.add(new TableData("X", "X", "X", "X", "X", "X", "X", "X", "X"));
-       data.add(new TableData("X", "X", "X", "X", "X", "X", "X", "X", "X"));
-       data.add(new TableData("X", "X", "X", "X", "X", "X", "X", "X", "X"));
+       data.add(new TableData("fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg"));
+       data.add(new TableData("fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg"));
+       data.add(new TableData("fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg"));
+       data.add(new TableData("fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg"));
+       data.add(new TableData("fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg"));
+       data.add(new TableData("fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg"));
+       data.add(new TableData("fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg"));
+       data.add(new TableData("fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg"));
+       data.add(new TableData("fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg", "fog.jpg"));
        return data;
     }
 
     private TableView<TableData> createTable(ObservableList data){
         TableView<TableData> table = new TableView<>();
         table.setEditable(false);
-        table.setMaxWidth(182); table.setMaxHeight(245);
+        table.setMaxWidth(440); table.setMaxHeight(440);
 
-        TableColumn<TableData, String> firstCol = createCol("1", "first");
-        TableColumn<TableData, String> secondCol = createCol("2", "second");
-        TableColumn<TableData, String> thirdCol = createCol("3", "third");
-        TableColumn<TableData, String> fourthCol = createCol("4", "fourth");
-        TableColumn<TableData, String> fifthCol = createCol("5", "fifth");
-        TableColumn<TableData, String> sixthCol = createCol("6", "sixth");
-        TableColumn<TableData, String> seventhCol = createCol("7", "seventh");
-        TableColumn<TableData, String> eightCol = createCol("8", "eighth");
-        TableColumn<TableData, String> ninthCol = createCol("9", "ninth");
+        TableColumn<TableData, String> firstCol = createGameCol("1", "first");
+        TableColumn<TableData, String> secondCol = createGameCol("2", "second");
+        TableColumn<TableData, String> thirdCol = createGameCol("3", "third");
+        TableColumn<TableData, String> fourthCol = createGameCol("4", "fourth");
+        TableColumn<TableData, String> fifthCol = createGameCol("5", "fifth");
+        TableColumn<TableData, String> sixthCol = createGameCol("6", "sixth");
+        TableColumn<TableData, String> seventhCol = createGameCol("7", "seventh");
+        TableColumn<TableData, String> eightCol = createGameCol("8", "eighth");
+        TableColumn<TableData, String> ninthCol = createGameCol("9", "ninth");
 
 
         table.setItems(data);
@@ -642,10 +647,19 @@ public class Main extends Application {
         return column;
     }
 
+    private TableColumn<TableData, String> createGameCol(String text, String where){
+        TableColumn<TableData, String> column = new TableColumn<>(text);
+        column.setCellValueFactory(new PropertyValueFactory<>(where));
+        column.setPrefWidth(40);
+        column.setEditable(false);
+        column.setSortable(false);
+        return column;
+    }
+
     private TableView<TableData> createSetupForPlayer(){
         TableView<TableData> table = new TableView<>();
         table.setEditable(false);
-        table.setMaxWidth(182); table.setMaxHeight(245);
+        table.setMaxWidth(182); table.setMaxHeight(250);
 
         TableColumn<TableData, String> firstCol = createCol("1", "one");
         TableColumn<TableData, String> secondCol = createCol("2", "two");
@@ -666,7 +680,6 @@ public class Main extends Application {
             int row = tablePosition.getRow();
             int col = tablePosition.getColumn();
             addToField(row, col);
-
             table.setItems(getDataForSetup());
             table.refresh();
         });
@@ -683,13 +696,13 @@ public class Main extends Application {
         StackPane player1Tab = new StackPane();
         StackPane player2Tab = new StackPane();
         //player1Won.setVisible(false); player2Won.setVisible(false);
-        player1Won.setMaxWidth(200); player1Won.setMaxHeight(50);
+        player1Won.setMaxWidth(400); player1Won.setMaxHeight(50);
         player1Won.setTranslateX(0);
-        player1Won.setFont(Font.font("Times New Roman", FontWeight.EXTRA_BOLD, FontPosture.REGULAR, 25));
+        player1Won.setFont(Font.font("Times New Roman", FontWeight.EXTRA_BOLD, FontPosture.REGULAR, 40));
         player1Won.setTextFill(Color.GREEN);
-        player2Won.setMaxWidth(200); player2Won.setMaxHeight(50);
+        player2Won.setMaxWidth(400); player2Won.setMaxHeight(50);
         player2Won.setTranslateX(0);
-        player2Won.setFont(Font.font("Times New Roman", FontWeight.EXTRA_BOLD, FontPosture.REGULAR, 25));
+        player2Won.setFont(Font.font("Times New Roman", FontWeight.EXTRA_BOLD, FontPosture.REGULAR, 40));
         player2Won.setTextFill(Color.GREEN);
 
         BorderPane gameSetup = new BorderPane();
@@ -752,66 +765,87 @@ public class Main extends Application {
     }
 
     private EventHandler<MouseEvent> getMouse(TableView<TableData> table, Player player){
+        Media expSound = new Media(new File("resources/explosion.mp3").toURI().toString());
+        explosion = new MediaPlayer(expSound);
         EventHandler<MouseEvent> mouse = mouseEvent -> {
             field = player.getField();
             TablePosition tablePosition = table.getSelectionModel().getSelectedCells().get(0);
             int row = tablePosition.getRow();
             int col = tablePosition.getColumn();
             TableData td = table.getItems().get(table.getSelectionModel().getSelectedIndex());
+            explosion.setStopTime(Duration.millis(3000));
             switch (col) {
                 case 0 -> {
-                    if (field[row][0] == 1)
-                        td.setFirst("O");
+                    if (field[row][0] == 1) {
+                        td.setFirst("ship.jpg");
+                        explosion.play();
+                    }
                     else
-                        td.setFirst("~");
+                        td.setFirst("water.jpg");
                 }
                 case 1 -> {
-                    if (field[row][1] == 1)
-                        td.setSecond("O");
+                    if (field[row][1] == 1) {
+                        td.setSecond("ship.jpg");
+                        explosion.play();
+                    }
                     else
-                        td.setSecond("~");
+                        td.setSecond("water.jpg");
                 }
                 case 2 -> {
-                    if (field[row][2] == 1)
-                        td.setThird("O");
+                    if (field[row][2] == 1) {
+                        td.setThird("ship.jpg");
+                        explosion.play();
+                    }
                     else
-                        td.setThird("~");
+                        td.setThird("water.jpg");
                 }
                 case 3 -> {
-                    if (field[row][3] == 1)
-                        td.setFourth("O");
+                    if (field[row][3] == 1) {
+                        td.setFourth("ship.jpg");
+                        explosion.play();
+                    }
                     else
-                        td.setFourth("~");
+                        td.setFourth("water.jpg");
                 }
                 case 4 -> {
-                    if (field[row][4] == 1)
-                        td.setFifth("O");
+                    if (field[row][4] == 1) {
+                        td.setFifth("ship.jpg");
+                        explosion.play();
+                    }
                     else
-                        td.setFifth("~");
+                        td.setFifth("water.jpg");
                 }
                 case 5 -> {
-                    if (field[row][5] == 1)
-                        td.setSixth("O");
+                    if (field[row][5] == 1) {
+                        td.setSixth("ship.jpg");
+                        explosion.play();
+                    }
                     else
-                        td.setSixth("~");
+                        td.setSixth("water.jpg");
                 }
                 case 6 -> {
-                    if (field[row][6] == 1)
-                        td.setSeventh("O");
+                    if (field[row][6] == 1) {
+                        td.setSeventh("ship.jpg");
+                        explosion.play();
+                    }
                     else
-                        td.setSeventh("~");
+                        td.setSeventh("water.jpg");
                 }
                 case 7 -> {
-                    if (field[row][7] == 1)
-                        td.setEighth("O");
+                    if (field[row][7] == 1) {
+                        td.setEighth("ship.jpg");
+                        explosion.play();
+                    }
                     else
-                        td.setEighth("~");
+                        td.setEighth("water.jpg");
                 }
                 case 8 -> {
-                    if (field[row][8] == 1)
-                        td.setNinth("O");
+                    if (field[row][8] == 1) {
+                        td.setNinth("ship.jpg");
+                        explosion.play();
+                    }
                     else
-                        td.setNinth("~");
+                        td.setNinth("water.jpg");
                 }
             }
             if ((field[row][col] == 0) || (field[row][col] == -1))
@@ -820,6 +854,7 @@ public class Main extends Application {
                 player.setCount(player.getCount() + 1);
             table.refresh();
         };
+        explosion.stop();
         return mouse;
     }
 
