@@ -1,3 +1,8 @@
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.text.Font;
+
+
 public class TableData {
     private String first, second, third, fourth, fifth, sixth, seventh, eighth, ninth;
     private int one, two, three, four, five, six, seven, eight, nine;
@@ -26,72 +31,99 @@ public class TableData {
         this.nine = nine;
     }
 
-    public String getFirst() {
-        return first;
+    public ImageView getFirst() {
+        ImageView img = new ImageView(new Image(first));
+        img.setFitWidth(20); img.setFitHeight(20);
+        img.setTranslateX(-5);
+        return img;
     }
 
     public void setFirst(String first) {
         this.first = first;
     }
 
-    public String getSecond() {
-        return second;
+    public ImageView getSecond() {
+        ImageView img = new ImageView(new Image(second));
+        img.setFitWidth(20); img.setFitHeight(20);
+        img.setTranslateX(-5);
+        return img;
     }
 
     public void setSecond(String second) {
         this.second = second;
     }
 
-    public String getThird() {
-        return third;
+    public ImageView getThird() {
+        ImageView img = new ImageView(new Image(third));
+        img.setFitWidth(20); img.setFitHeight(20);
+        img.setTranslateX(-5);
+        return img;
     }
 
     public void setThird(String third) {
         this.third = third;
     }
 
-    public String getFourth() {
-        return fourth;
+    public ImageView getFourth() {
+        ImageView img = new ImageView(new Image(fourth));
+        img.setFitWidth(20); img.setFitHeight(20);
+        img.setTranslateX(-5);
+        return img;
     }
 
     public void setFourth(String fourth) {
         this.fourth = fourth;
     }
 
-    public String getFifth() {
-        return fifth;
+    public ImageView getFifth() {
+        ImageView img = new ImageView(new Image(fifth));
+        img.setFitWidth(20); img.setFitHeight(20);
+        img.setTranslateX(-5);
+        return img;
     }
 
     public void setFifth(String fifth) {
         this.fifth = fifth;
     }
 
-    public String getSixth() {
-        return sixth;
+    public ImageView getSixth() {
+        ImageView img = new ImageView(new Image(sixth));
+        img.setFitWidth(20); img.setFitHeight(20);
+        img.setTranslateX(-5);
+        return img;
     }
 
     public void setSixth(String sixth) {
         this.sixth = sixth;
     }
 
-    public String getSeventh() {
-        return seventh;
+    public ImageView getSeventh() {
+        ImageView img = new ImageView(new Image(seventh));
+        img.setFitWidth(20); img.setFitHeight(20);
+        img.setTranslateX(-5);
+        return img;
     }
 
     public void setSeventh(String seventh) {
         this.seventh = seventh;
     }
 
-    public String getEighth() {
-        return eighth;
+    public ImageView getEighth() {
+        ImageView img = new ImageView(new Image(eighth));
+        img.setFitWidth(20); img.setFitHeight(20);
+        img.setTranslateX(-5);
+        return img;
     }
 
     public void setEighth(String eighth) {
         this.eighth = eighth;
     }
 
-    public String getNinth() {
-        return ninth;
+    public ImageView getNinth() {
+        ImageView img = new ImageView(new Image(ninth));
+        img.setFitWidth(20); img.setFitHeight(20);
+        img.setTranslateX(-5);
+        return img;
     }
 
     public void setNinth(String ninth) {
